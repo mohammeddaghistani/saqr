@@ -1,38 +1,32 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <title>الرئيسية - صقر البلد الأمين</title>
-    <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="watermark"></div>
     <header>
-        <div style="display:flex; align-items:center; gap:10px;">
-            <img src="logo.png" class="logo-header">
-            <h3 style="margin:0">مبادرة صقر البلد الأمين</h3>
-        </div>
-        <button class="btn-gold" style="width:auto; padding:8px 15px;" onclick="sessionStorage.clear(); location.href='index.html'">خروج</button>
+        <img src="logo.png" class="logo-header">
+        <button onclick="sessionStorage.clear(); location.href='index.html'" style="background:none; color:white; border:none; cursor:pointer;">خروج</button>
     </header>
-    <div style="padding:30px; max-width:800px; margin:auto;">
-        <h2 id="welcome" style="color:var(--gold); font-weight:900;">أهلاً بك</h2>
-        <p id="role-text" style="opacity:0.7; margin-bottom:30px;"></p>
-        
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:20px;">
-            <button class="btn-gold" onclick="location.href='records.html'">📝 إضافة سجل ميداني</button>
-            <button id="ceoBtn" class="btn-gold hidden" onclick="location.href='ceo.html'">🏛️ مكتب القيادة</button>
-            <button id="adminBtn" class="btn-gold hidden" onclick="location.href='admin.html'">⚙️ إدارة النظام</button>
+    <div style="padding:20px; max-width:600px; margin:auto;">
+        <div class="glass-card">
+            <h2 id="welcomeMsg" style="color:var(--gold);">أهلاً بك</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <button class="btn-gold" onclick="location.href='records.html'">📝 إضافة سجل</button>
+                <button id="govBtn" class="btn-gold hidden" onclick="location.href='governance.html'">⚖️ الحوكمة</button>
+                <button id="cfoBtn" class="btn-gold hidden" onclick="location.href='cfo.html'">💰 المالية</button>
+                <button class="btn-gold" style="grid-column:span 2; background:#ff4d4d22; color:#ff4d4d; border:1px solid #ff4d4d;" onclick="location.href='support.html'">🆘 الدعم الفني</button>
+            </div>
         </div>
     </div>
     <script>
-        if(sessionStorage.getItem('isLoggedIn') !== 'true') window.location.href="index.html";
         const role = sessionStorage.getItem('userRole');
-        document.getElementById('welcome').innerText = "مرحباً بك: " + sessionStorage.getItem('userName');
-        document.getElementById('role-text').innerText = "الصلاحية: " + role;
-        
-        if(role === 'admin' || role === 'ceo') document.getElementById('ceoBtn').classList.remove('hidden');
-        if(role === 'admin') document.getElementById('adminBtn').classList.remove('hidden');
+        document.getElementById('welcomeMsg').innerText = "مرحباً، " + sessionStorage.getItem('userName');
+        if(['admin', 'ceo', 'cfo'].includes(role)) document.getElementById('cfoBtn').classList.remove('hidden');
+        if(['admin', 'ceo'].includes(role)) document.getElementById('govBtn').classList.remove('hidden');
     </script>
 </body>
 </html>
