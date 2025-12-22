@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دخول - مبادرة صقر البلد الأمين</title>
+    <title>دخول - صقر البلد الأمين</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,42 +12,54 @@
         <div class="glass-card">
             <img src="logo.png" class="main-logo" alt="Logo">
             <h2>مبادرة صقر البلد الأمين</h2>
-            <input type="text" id="empID" placeholder="أدخل الرقم الوظيفي" inputmode="numeric">
-            <button class="btn-gold" id="loginBtn" onclick="login()">دخول</button>
+            
+            <div id="loginStep">
+                <input type="text" id="empID" placeholder="أدخل الرقم الوظيفي" inputmode="numeric">
+                <button class="btn-gold" id="otpBtn" onclick="requestOTP()">إرسال رمز التحقق</button>
+            </div>
+
+            <div id="otpStep" class="hidden">
+                <p style="font-size:12px; margin-bottom:10px;">أدخل الرمز المرسل إلى بريدك الإلكتروني</p>
+                <input type="text" id="otpInput" placeholder="000000" style="letter-spacing:8px; font-weight:bold; text-align:center;">
+                <button class="btn-gold" onclick="verifyOTP()">تأكيد الدخول</button>
+                <button class="btn-gold" style="background:none; color:white; border:none; font-size:12px;" onclick="location.reload()">تغيير الرقم</button>
+            </div>
         </div>
     </div>
 
     <script>
-        const API = "https://script.google.com/macros/s/AKfycbxUEtrWwX2QmEv8w0frUeGuMSOuu46US9f3IMHAez4J-cYhCy-pVFXJaByE78lODw9L/exec";
+        const API = "https://script.google.com/macros/s/AKfycbxrpX6dgTBClMpXdIrklgCGMjCDAC_KqoDbo5li8qsT6c3VH_NeWUKorN9NCzv1ud2S/exec";
+        let serverOTP = null;
+        let tempUser = null;
 
-        async function login() {
+        async function requestOTP() {
             const id = document.getElementById('empID').value.trim();
-            const btn = document.getElementById('loginBtn');
             if(!id) return alert("يرجى إدخال الرقم الوظيفي");
-
-            btn.disabled = true;
-            btn.innerText = "جاري التحقق...";
-
+            
+            document.getElementById('otpBtn').innerText = "جاري الإرسال...";
             try {
-                const response = await fetch(`${API}?action=verifyOTP&empID=${id}`);
-                const res = await response.json();
-
+                const res = await fetch(`${API}?action=requestOTP&empID=${id}`).then(r => r.json());
                 if(res.success) {
-                    sessionStorage.setItem('isLoggedIn', 'true');
-                    sessionStorage.setItem('empID', id);
-                    sessionStorage.setItem('userName', res.data.name);
-                    sessionStorage.setItem('userRole', res.data.role);
-                    window.location.href = 'home.html';
+                    serverOTP = res.data.otp;
+                    tempUser = res.data.user;
+                    document.getElementById('loginStep').classList.add('hidden');
+                    document.getElementById('otpStep').classList.remove('hidden');
                 } else {
                     alert(res.msg);
-                    btn.disabled = false;
-                    btn.innerText = "دخول";
+                    document.getElementById('otpBtn').innerText = "إرسال رمز التحقق";
                 }
-            } catch (error) {
-                alert("فشل الاتصال: تأكد من إعدادات النشر على (Anyone)");
-                btn.disabled = false;
-                btn.innerText = "دخول";
-            }
+            } catch (e) { alert("فشل الاتصال بالسيرفر"); }
+        }
+
+        function verifyOTP() {
+            const input = document.getElementById('otpInput').value.trim();
+            if(input == serverOTP) {
+                sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('empID', document.getElementById('empID').value);
+                sessionStorage.setItem('userName', tempUser.name);
+                sessionStorage.setItem('userRole', tempUser.role);
+                window.location.href = 'home.html';
+            } else { alert("الرمز غير صحيح!"); }
         }
     </script>
 </body>
