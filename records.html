@@ -1,56 +1,69 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>إضافة سجل - صقر</title>
-    <link rel="icon" type="image/png" href="logo.png">
+    <title>إضافة سجل - صقر البلد الأمين</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="watermark"></div>
     <header>
-        <img src="logo.png" class="logo-header">
-        <button class="btn-gold" style="width:auto; padding:8px 15px;" onclick="location.href='home.html'">⬅️ عودة</button>
+        <span>📝 إضافة سجل جديد</span>
+        <button onclick="location.href='home.html'" class="btn-gold" style="width:auto; padding:5px 15px;">عودة</button>
     </header>
-    <div style="padding:20px; max-width:500px; margin:auto;">
+
+    <div class="container" style="padding:20px; max-width:500px; margin:auto;">
         <div class="glass-card">
-            <h3 style="color:var(--gold)">📝 إضافة سجل جديد</h3>
             <label>فئة العمل</label>
-            <select id="cat">
-                <option value="ميداني">زيارة ميدانية</option>
-                <option value="إداري">عمل مكتب</option>
-                <option value="تبرع">استلام تبرع</option>
+            <select id="category">
+                <option>عمل ميداني</option>
+                <option>إنجاز إداري</option>
+                <option>مهمة خاصة</option>
             </select>
-            <label>المبلغ (إن وجد)</label>
-            <input type="number" id="amt" placeholder="0.00">
-            <label>التفاصيل</label>
-            <textarea id="note" rows="4" placeholder="اكتب الملاحظات هنا..."></textarea>
-            <button class="btn-gold" id="s-btn" onclick="save()">حفظ البيانات في الجدول</button>
+
+            <label>المبلغ المرتبط (إن وجد)</label>
+            <input type="number" id="amount" placeholder="0.00">
+
+            <label>تفاصيل العمل</label>
+            <textarea id="notes" rows="4" placeholder="اكتب وصفاً مختصراً للمهمة..."></textarea>
+
+            <button class="btn-gold" id="saveBtn" onclick="saveRecord()">حفظ وإرسال</button>
         </div>
     </div>
+
     <script>
-        const API = "https://script.google.com/macros/s/AKfycbzPMNYU_Q0nTlF8OI6Js4NfXbKjre4I5YspWlg8OdJMa7O1_IZiNjZsvqdfjaPsz46o/exec";
-        async function save() {
-            const btn = document.getElementById('s-btn');
-            const data = { 
-                action:'addRecord', 
-                empID:sessionStorage.getItem('empID'), 
-                empName:sessionStorage.getItem('userName'), 
-                category:document.getElementById('cat').value, 
-                amount:document.getElementById('amt').value, 
-                notes:document.getElementById('note').value 
+        const API = "https://script.google.com/macros/s/AKfycbz70KMwDfxhYukdwfe9bvrMCxJj7zXq0A_uLiJPoTXVU13I9zNqGvGcVk47NWQK6sBW/exec";
+
+        async function saveRecord() {
+            const btn = document.getElementById('saveBtn');
+            const data = {
+                action: 'addRecord',
+                empID: sessionStorage.getItem('empID'),
+                empName: sessionStorage.getItem('userName'),
+                category: document.getElementById('category').value,
+                amount: document.getElementById('amount').value,
+                notes: document.getElementById('notes').value
             };
-            
-            if(!data.notes) return alert("يرجى كتابة الملاحظات");
-            
-            btn.disabled = true; btn.innerText = "⏳ جاري الحفظ...";
-            const res = await fetch(API, {method:'POST', body:JSON.stringify(data)}).then(r=>r.json());
-            if(res.success) {
-                alert("✅ تم الحفظ بنجاح");
-                location.href="home.html";
-            } else {
-                alert("خطأ: " + res.msg);
-                btn.disabled = false; btn.innerText = "حفظ البيانات";
+
+            if(!data.notes) return alert("يرجى كتابة التفاصيل");
+
+            btn.disabled = true;
+            btn.innerText = "جاري الحفظ...";
+
+            try {
+                const res = await fetch(API, {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                }).then(r => r.json());
+
+                if(res.success) {
+                    alert("✅ تم الحفظ بنجاح رقم الطلب: " + res.data.orderID);
+                    location.href = 'home.html';
+                }
+            } catch (e) {
+                alert("حدث خطأ في الاتصال");
+                btn.disabled = false;
+                btn.innerText = "حفظ وإرسال";
             }
         }
     </script>
