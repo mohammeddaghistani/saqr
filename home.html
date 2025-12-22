@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>الرئيسية - مبادرة صقر</title>
+    <title>الرئيسية - صقر البلد الأمين</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -11,24 +11,28 @@
     <header>
         <div style="display:flex; align-items:center; gap:10px;">
             <img src="logo.png" class="logo-header">
-            <h3>صقر البلد الأمين</h3>
+            <h3 style="margin:0">مبادرة صقر البلد الأمين</h3>
         </div>
         <button class="btn-gold" style="width:auto; padding:8px 15px;" onclick="sessionStorage.clear(); location.href='index.html'">خروج</button>
     </header>
-    <div style="padding:30px;">
-        <h2 id="welcome" style="color:var(--gold);">أهلاً بك</h2>
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:20px; margin-top:20px;">
-            <button class="btn-gold" onclick="location.href='records.html'">📝 إضافة سجل جديد</button>
-            <button id="adminBtn" class="btn-gold hidden" onclick="location.href='admin.html'">⚙️ إدارة النظام</button>
+    <div style="padding:30px; max-width:800px; margin:auto;">
+        <h2 id="welcome" style="color:var(--gold); font-weight:900;">أهلاً بك</h2>
+        <p id="role-text" style="opacity:0.7; margin-bottom:30px;"></p>
+        
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:20px;">
+            <button class="btn-gold" onclick="location.href='records.html'">📝 إضافة سجل ميداني</button>
             <button id="ceoBtn" class="btn-gold hidden" onclick="location.href='ceo.html'">🏛️ مكتب القيادة</button>
+            <button id="adminBtn" class="btn-gold hidden" onclick="location.href='admin.html'">⚙️ إدارة النظام</button>
         </div>
     </div>
     <script>
         if(sessionStorage.getItem('isLoggedIn') !== 'true') window.location.href="index.html";
-        const user = { name: sessionStorage.getItem('userName'), role: sessionStorage.getItem('userRole') };
-        document.getElementById('welcome').innerText = "مرحباً: " + user.name;
-        if(user.role === 'admin') document.getElementById('adminBtn').classList.remove('hidden');
-        if(user.role === 'admin' || user.role === 'ceo') document.getElementById('ceoBtn').classList.remove('hidden');
+        const role = sessionStorage.getItem('userRole');
+        document.getElementById('welcome').innerText = "مرحباً بك: " + sessionStorage.getItem('userName');
+        document.getElementById('role-text').innerText = "الصلاحية: " + role;
+        
+        if(role === 'admin' || role === 'ceo') document.getElementById('ceoBtn').classList.remove('hidden');
+        if(role === 'admin') document.getElementById('adminBtn').classList.remove('hidden');
     </script>
 </body>
 </html>
