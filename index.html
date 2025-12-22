@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="toast"></div>
     <div class="watermark"></div>
     <div style="display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px;">
         <div class="glass-card" style="width:100%; max-width:400px; text-align:center;">
@@ -18,18 +17,20 @@
         </div>
     </div>
     <script>
-        const API = "أدخل_رابط_تطبيق_جوجل_هنا";
+        const API = "ضع_رابط_ويب_آب_جوجل_هنا"; 
         async function login() {
             const id = document.getElementById('empID').value;
             if(!id) return alert("يرجى إدخال الرقم الوظيفي");
-            const res = await fetch(API, {method:'POST', body:JSON.stringify({action:'verifyOTP', empID:id})}).then(r=>r.json());
-            if(res.success) {
-                sessionStorage.setItem('isLoggedIn','true');
-                sessionStorage.setItem('userName', res.data.name);
-                sessionStorage.setItem('userRole', res.data.role);
-                sessionStorage.setItem('empID', id);
-                window.location.href = "home.html";
-            } else alert(res.msg);
+            try {
+                const res = await fetch(API, {method:'POST', body:JSON.stringify({action:'verifyOTP', empID:id})}).then(r=>r.json());
+                if(res.success) {
+                    sessionStorage.setItem('isLoggedIn','true');
+                    sessionStorage.setItem('userName', res.data.name);
+                    sessionStorage.setItem('userRole', res.data.role);
+                    sessionStorage.setItem('empID', id);
+                    window.location.href = "home.html";
+                } else alert(res.msg);
+            } catch(e) { alert("خطأ في الاتصال بالسيرفر. تأكد من إعدادات الـ Web App."); }
         }
     </script>
 </body>
