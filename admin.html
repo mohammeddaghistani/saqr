@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة النظام - مبادرة صقر</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="toast"></div>
+<div class="watermark"></div>
+
+<header>
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <img src="logo.png" class="logo-header">
+        <h3 style="margin: 0; font-weight: 900;">إدارة مستخدمي المبادرة</h3>
+    </div>
+    <button class="btn-gold" style="width: auto; background: rgba(255,255,255,0.1); color: #fff;" onclick="location.href='home.html'">⬅️ عودة</button>
+</header>
+
+<div class="container" style="padding: 25px; max-width: 600px; margin: 0 auto;">
+    <div class="glass-card">
+        <h2 style="color: var(--gold); margin-top: 0;">👤 إضافة موظف جديد</h2>
+        <p style="opacity: 0.8; font-size: 14px; margin-bottom: 20px;">سيتم إضافة البيانات مباشرة إلى جدول Users المعتمد.</p>
+
+        <label>الرقم الوظيفي (ID)</label>
+        <input type="text" id="newID" placeholder="مثلاً: 1005">
+
+        <label>الاسم الكامل</label>
+        <input type="text" id="newName" placeholder="أدخل اسم الموظف الثلاثي">
+
+        <label>البريد الإلكتروني</label>
+        <input type="email" id="newEmail" placeholder="example@mail.com">
+
+        <label>الصلاحية في النظام</label>
+        <select id="newRole">
+            <option value="sales">مندوب ميداني</option>
+            <option value="ceo">رئيس تنفيذي (CEO)</option>
+            <option value="admin">مدير نظام (Admin)</option>
+        </select>
+
+        <button class="btn-gold" id="addBtn" onclick="addUser()">إضافة الموظف الآن</button>
+    </div>
+</div>
+
+<script>
+    const API = "https://script.google.com/macros/s/AKfycbzPMNYU_Q0nTlF8OI6Js4NfXbKjre4I5YspWlg8OdJMa7O1_IZiNjZsvqdfjaPsz46o/exec";
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.innerText = msg; t.style.display = 'block';
+        setTimeout(() => t.style.display = 'none', 3000);
+    }
+
+    async function addUser() {
+        const btn = document.getElementById('addBtn');
+        const data = {
+            action: 'addUser',
+            newID: document.getElementById('newID').value,
+            newName: document.getElementById('newName').value,
+            newEmail: document.getElementById('newEmail').value,
+            newRole: document.getElementById('newRole').value
+        };
+
+        if (!data.newID || !data.newName) return alert("يرجى إكمال البيانات الأساسية");
+
+        btn.disabled = true;
+        btn.innerText = "⏳ جاري الإضافة...";
+        
+        try {
+            const response = await fetch(API, {
+                method: 'POST',
+                body: JSON.stringify(data)
+            });
+            const res = await response.json();
+
+            if (res.success) {
+                showToast("✅ " + res.msg);
+                // تفريغ الحقول بعد النجاح
+                document.getElementById('newID').value = '';
+                document.getElementById('newName').value = '';
+                document.getElementById('newEmail').value = '';
+            } else {
+                alert("خطأ: " + res.msg);
+            }
+        } catch (error) {
+            alert("فشل الاتصال بالسيرفر.");
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "إضافة الموظف الآن";
+        }
+    }
+
+    // حماية الصفحة: لا يفتحها إلا الأدمن
+    if (sessionStorage.getItem('userRole') !== 'admin') {
+        alert("هذه الصفحة مخصصة لمدير النظام فقط");
+        window.location.href = "home.html";
+    }
+</script>
+
+</body>
+</html>
