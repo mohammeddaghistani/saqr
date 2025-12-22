@@ -32,7 +32,7 @@
     </div>
 
     <script>
-        const API = "https://script.google.com/macros/s/AKfycbxUEtrWwX2QmEv8w0frUeGuMSOuu46US9f3IMHAez4J-cYhCy-pVFXJaByE78lODw9L/exec";
+        const API = "https://script.google.com/macros/s/AKfycbxrpX6dgTBClMpXdIrklgCGMjCDAC_KqoDbo5li8qsT6c3VH_NeWUKorN9NCzv1ud2S/exec";
 
         async function saveRecord() {
             const btn = document.getElementById('saveBtn');
@@ -57,11 +57,11 @@
                 }).then(r => r.json());
 
                 if(res.success) {
-                    alert("✅ تم الحفظ بنجاح رقم الطلب: " + res.data.orderID);
+                    alert("✅ تم الحفظ بنجاح. رقم الطلب: " + res.data.orderID);
                     location.href = 'home.html';
                 }
             } catch (e) {
-                alert("حدث خطأ في الاتصال");
+                alert("حدث خطأ في الاتصال بالسيرفر");
                 btn.disabled = false;
                 btn.innerText = "حفظ وإرسال";
             }
