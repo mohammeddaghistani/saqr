@@ -1,19 +1,19 @@
 :root { --gold: #C89B3C; --dark: #0a0a0a; --green: #0B5F57; }
 body { background: var(--dark); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; direction: rtl; overflow-x: hidden; }
 
-/* العلامة المائية الزجاجية في الخلفية */
-.watermark { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; height: 80%; background: url('logo.png') no-repeat center; background-size: contain; opacity: 0.06; z-index: -1; pointer-events: none; }
+/* العلامة المائية الزجاجية في الخلفية لكافة الصفحات */
+.watermark { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; height: 80%; background: url('logo.png') no-repeat center; background-size: contain; opacity: 0.05; z-index: -1; pointer-events: none; }
 
 .login-container { display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; }
-.glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); padding: 30px; border-radius: 20px; border: 1px solid rgba(200, 155, 60, 0.3); text-align: center; width: 100%; max-width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); padding: 30px; border-radius: 20px; border: 1px solid rgba(200, 155, 60, 0.3); text-align: center; width: 100%; max-width: 350px; }
 
 .main-logo { width: 100px; margin-bottom: 20px; }
-h2 { color: var(--gold); font-size: 1.4rem; margin-bottom: 25px; }
+h2 { color: var(--gold); font-size: 1.3rem; margin-bottom: 25px; }
 
 input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 10px; border: 1px solid var(--gold); background: rgba(0,0,0,0.6); color: white; text-align: center; font-size: 1rem; box-sizing: border-box; }
 
-.btn-gold { width: 100%; padding: 12px; background: var(--gold); border: none; border-radius: 10px; color: black; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1rem; }
+.btn-gold { width: 100%; padding: 12px; background: var(--gold); border: none; border-radius: 10px; color: black; font-weight: bold; cursor: pointer; transition: 0.3s; }
 .btn-gold:hover { background: #e0ae45; transform: scale(1.02); }
 
-header { background: var(--green); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); }
+header { background: var(--green); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 100; }
 .hidden { display: none !important; }
