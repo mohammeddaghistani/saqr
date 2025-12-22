@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة الرقابة - صقر البلد الأمين</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 13px; }
+        th { background: var(--gold); color: black; padding: 10px; }
+        td { padding: 10px; border-bottom: 1px solid rgba(200,155,60,0.2); text-align: center; }
+        .status-pending { color: #ffa500; }
+        .status-approved { color: #00ff00; }
+        .status-rejected { color: #ff4d4d; }
+    </style>
+</head>
+<body>
+    <div class="watermark"></div>
+    <header>
+        <span>⚖️ نظام الحوكمة والرقابة</span>
+        <button onclick="location.href='home.html'" class="btn-gold" style="width:auto; padding:5px 15px;">عودة</button>
+    </header>
+
+    <div style="padding:15px;">
+        <div class="glass-card" style="overflow-x:auto;">
+            <h3 style="color:var(--gold); margin-top:0;">الطلبات الأخيرة</h3>
+            <div id="loading">جاري جلب البيانات...</div>
+            <table id="recordsTable" class="hidden">
+                <thead>
+                    <tr>
+                        <th>الرقم</th>
+                        <th>الموظف</th>
+                        <th>الفئة</th>
+                        <th>المبلغ</th>
+                        <th>الحالة</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const API = "https://script.google.com/macros/s/AKfycbz70KMwDfxhYukdwfe9bvrMCxJj7zXq0A_uLiJPoTXVU13I9zNqGvGcVk47NWQK6sBW/exec";
+
+        async function loadData() {
+            try {
+                const response = await fetch(`${API}?action=getStats`);
+                const res = await response.json();
+                
+                if(res.success) {
+                    const tbody = document.getElementById('tableBody');
+                    document.getElementById('loading').classList.add('hidden');
+                    document.getElementById('recordsTable').classList.remove('hidden');
+                    
+                    // ملاحظة: تأكد أن السيرفر يرسل قائمة recentRecords في getStats
+                    res.data.recentRecords.forEach(rec => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${rec.id}</td>
+                            <td>${rec.emp}</td>
+                            <td>${rec.cat}</td>
+                            <td>${rec.amt}</td>
+                            <td class="status-${rec.status.toLowerCase()}">${rec.status}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            } catch (e) {
+                document.getElementById('loading').innerText = "فشل تحميل البيانات";
+            }
+        }
+        loadData();
+    </script>
+</body>
+</html>
