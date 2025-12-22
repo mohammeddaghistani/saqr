@@ -8,47 +8,38 @@
 </head>
 <body>
     <div class="watermark"></div>
-    <div style="display:flex; justify-content:center; align-items:center; height:100vh;">
-        <div class="glass-card" style="width:320px; text-align:center;">
-            <img src="logo.png" style="width:100px; margin-bottom:15px;">
-            <h2 style="color:var(--gold)">مبادرة صقر البلد الأمين</h2>
+    <div class="login-container">
+        <div class="glass-card">
+            <img src="logo.png" class="main-logo">
+            <h2>مبادرة صقر البلد الأمين</h2>
             <input type="text" id="empID" placeholder="الرقم الوظيفي">
             <button class="btn-gold" id="loginBtn" onclick="login()">دخول</button>
         </div>
     </div>
-
     <script>
-        const API = "https://script.google.com/macros/s/AKfycbz70KMwDfxhYukdwfe9bvrMCxJj7zXq0A_uLiJPoTXVU13I9zNqGvGcVk47NWQK6sBW/exec";
-
+        const API = "https://script.google.com/macros/s/AKfycbw101IqJ-AS0uDHK0e4qbbhJsw2gH4MMPub-xc2EbUtYmtSpwNf722vx3HWX1eUE0MP/exec";
         async function login() {
             const id = document.getElementById('empID').value;
             const btn = document.getElementById('loginBtn');
-            if(!id) return alert("يرجى إدخال الرقم الوظيفي");
-
+            if(!id) return alert("أدخل الرقم الوظيفي");
             btn.disabled = true;
             btn.innerText = "جاري التحقق...";
-
-            const url = `${API}?action=verifyOTP&empID=${id}`;
-
             try {
-                const response = await fetch(url);
-                const res = await response.json();
-
+                const res = await fetch(`${API}?action=verifyOTP&empID=${id}`).then(r => r.json());
                 if(res.success) {
                     sessionStorage.setItem('isLoggedIn', 'true');
                     sessionStorage.setItem('empID', id);
                     sessionStorage.setItem('userName', res.data.name);
                     sessionStorage.setItem('userRole', res.data.role);
-                    window.location.href = 'home.html';
+                    location.href = 'home.html';
                 } else {
                     alert(res.msg);
                     btn.disabled = false;
                     btn.innerText = "دخول";
                 }
-            } catch (error) {
-                alert("فشل الاتصال: تأكد من إعدادات النشر (Anyone)");
+            } catch (e) {
+                alert("فشل الاتصال: تأكد من إعدادات النشر على Anyone");
                 btn.disabled = false;
-                btn.innerText = "دخول";
             }
         }
     </script>
