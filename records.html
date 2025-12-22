@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>إضافة سجل - صقر</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="watermark"></div>
+    <header>
+        <img src="logo.png" class="logo-header">
+        <button class="btn-gold" style="width:auto; padding:8px 15px;" onclick="location.href='home.html'">⬅️ عودة</button>
+    </header>
+    <div style="padding:20px; max-width:500px; margin:auto;">
+        <div class="glass-card">
+            <h3>📝 إضافة عملية جديدة</h3>
+            <select id="cat"><option value="ميداني">زيارة ميدانية</option><option value="إداري">عمل إداري</option></select>
+            <input type="number" id="amt" placeholder="المبلغ إن وجد">
+            <textarea id="note" placeholder="ملاحظات التفصيل..."></textarea>
+            <button class="btn-gold" id="s-btn" onclick="save()">حفظ البيانات</button>
+        </div>
+    </div>
+    <script>
+        async function save() {
+            const btn = document.getElementById('s-btn');
+            btn.disabled = true; btn.innerText = "جاري الحفظ...";
+            const data = { action:'addRecord', empID:sessionStorage.getItem('empID'), empName:sessionStorage.getItem('userName'), category:document.getElementById('cat').value, amount:document.getElementById('amt').value, notes:document.getElementById('note').value };
+            await fetch("أدخل_رابط_تطبيق_جوجل_هنا", {method:'POST', body:JSON.stringify(data)});
+            alert("تم الحفظ بنجاح");
+            location.href="home.html";
+        }
+    </script>
+</body>
+</html>
