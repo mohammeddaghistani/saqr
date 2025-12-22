@@ -26,7 +26,7 @@
             const btn = document.getElementById('s-btn');
             btn.disabled = true; btn.innerText = "جاري الحفظ...";
             const data = { action:'addRecord', empID:sessionStorage.getItem('empID'), empName:sessionStorage.getItem('userName'), category:document.getElementById('cat').value, amount:document.getElementById('amt').value, notes:document.getElementById('note').value };
-            await fetch("أدخل_رابط_تطبيق_جوجل_هنا", {method:'POST', body:JSON.stringify(data)});
+            await fetch("https://script.google.com/macros/s/AKfycbwv17ZcRucvK0ZkqFkIH0LWHl4E-WJAQXIPF-E7NXTdGAv7Mwi--ubV6h2Q0JL3rMnz/exec", {method:'POST', body:JSON.stringify(data)});
             alert("تم الحفظ بنجاح");
             location.href="home.html";
         }
