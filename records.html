@@ -14,24 +14,44 @@
     </header>
     <div style="padding:20px; max-width:500px; margin:auto;">
         <div class="glass-card">
-            <h3>📝 إضافة عملية جديدة</h3>
-            <select id="cat"><option value="ميداني">زيارة ميدانية</option><option value="إداري">عمل إداري</option></select>
-            <input type="number" id="amt" placeholder="المبلغ إن وجد">
-            <textarea id="note" placeholder="ملاحظات التفصيل..."></textarea>
-            <button class="btn-gold" id="s-btn" onclick="save()">حفظ البيانات</button>
+            <h3 style="color:var(--gold)">📝 إضافة سجل جديد</h3>
+            <label>فئة العمل</label>
+            <select id="cat">
+                <option value="ميداني">زيارة ميدانية</option>
+                <option value="إداري">عمل مكتب</option>
+                <option value="تبرع">استلام تبرع</option>
+            </select>
+            <label>المبلغ (إن وجد)</label>
+            <input type="number" id="amt" placeholder="0.00">
+            <label>التفاصيل</label>
+            <textarea id="note" rows="4" placeholder="اكتب الملاحظات هنا..."></textarea>
+            <button class="btn-gold" id="s-btn" onclick="save()">حفظ البيانات في الجدول</button>
         </div>
     </div>
     <script>
-        await fetch(https://script.google.com/macros/s/AKfycbz1qKm_rALLDSlA1MqrFEciIJmE8VFk0AOUvnOlq3p4a-JnfAyI633-deZro_6PNnvc/exec", {
-    method: 'POST',
-    body: JSON.stringify(data)
-});
+        const API = "https://script.google.com/macros/s/AKfycbzPMNYU_Q0nTlF8OI6Js4NfXbKjre4I5YspWlg8OdJMa7O1_IZiNjZsvqdfjaPsz46o/exec";
+        async function save() {
             const btn = document.getElementById('s-btn');
-            btn.disabled = true; btn.innerText = "جاري الحفظ...";
-            const data = { action:'addRecord', empID:sessionStorage.getItem('empID'), empName:sessionStorage.getItem('userName'), category:document.getElementById('cat').value, amount:document.getElementById('amt').value, notes:document.getElementById('note').value };
-            await fetch("https://script.google.com/macros/s/AKfycbwv17ZcRucvK0ZkqFkIH0LWHl4E-WJAQXIPF-E7NXTdGAv7Mwi--ubV6h2Q0JL3rMnz/exec", {method:'POST', body:JSON.stringify(data)});
-            alert("تم الحفظ بنجاح");
-            location.href="home.html";
+            const data = { 
+                action:'addRecord', 
+                empID:sessionStorage.getItem('empID'), 
+                empName:sessionStorage.getItem('userName'), 
+                category:document.getElementById('cat').value, 
+                amount:document.getElementById('amt').value, 
+                notes:document.getElementById('note').value 
+            };
+            
+            if(!data.notes) return alert("يرجى كتابة الملاحظات");
+            
+            btn.disabled = true; btn.innerText = "⏳ جاري الحفظ...";
+            const res = await fetch(API, {method:'POST', body:JSON.stringify(data)}).then(r=>r.json());
+            if(res.success) {
+                alert("✅ تم الحفظ بنجاح");
+                location.href="home.html";
+            } else {
+                alert("خطأ: " + res.msg);
+                btn.disabled = false; btn.innerText = "حفظ البيانات";
+            }
         }
     </script>
 </body>
