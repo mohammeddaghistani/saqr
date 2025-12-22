@@ -9,7 +9,7 @@
 <div class="watermark"></div>
 <header>
     <span>👤 إدارة المستخدمين</span>
-    <button class="btn-gold" style="width:auto; padding:5px 15px;" onclick="location.href='home.html'">عودة</button>
+    <button class="btn-gold" style="width:auto; padding:5px 15px;" onclick="location.href='home.html'">عـودة</button>
 </header>
 
 <div class="container" style="padding:25px; max-width:600px; margin:0 auto;">
@@ -18,7 +18,7 @@
         <input type="text" id="newID">
         <label>اسم الموظف</label>
         <input type="text" id="newName">
-        <label>البريد الإلكتروني</label>
+        <label>البريد الإلكتروني (لإرسال OTP)</label>
         <input type="email" id="newEmail">
         <label>الرتبة</label>
         <select id="newRole">
@@ -31,7 +31,7 @@
 </div>
 
 <script>
-    const API = "https://script.google.com/macros/s/AKfycbxUEtrWwX2QmEv8w0frUeGuMSOuu46US9f3IMHAez4J-cYhCy-pVFXJaByE78lODw9L/exec";
+    const API = "https://script.google.com/macros/s/AKfycbxrpX6dgTBClMpXdIrklgCGMjCDAC_KqoDbo5li8qsT6c3VH_NeWUKorN9NCzv1ud2S/exec";
 
     async function addUser() {
         const btn = document.getElementById('addBtn');
@@ -43,7 +43,7 @@
             newRole: document.getElementById('newRole').value
         };
 
-        if (!data.newID || !data.newName) return alert("يرجى إكمال البيانات");
+        if (!data.newID || !data.newName || !data.newEmail) return alert("يرجى إكمال كافة البيانات");
 
         btn.disabled = true;
         btn.innerText = "جاري الإضافة...";
@@ -51,7 +51,7 @@
         try {
             const res = await fetch(API, { method: 'POST', body: JSON.stringify(data) }).then(r => r.json());
             if (res.success) {
-                alert("✅ " + res.msg);
+                alert("✅ تم إضافة الموظف بنجاح");
                 location.reload();
             }
         } catch (e) { alert("فشل الاتصال"); }
