@@ -2,96 +2,35 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مبادرة صقر البلد الأمين</title>
-    <link rel="icon" type="image/png" href="https://i.ibb.co/vz8S8v8/saqr-logo.png">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        :root { --primary: #0B5F57; --gold: #C89B3C; --bg: #041412; --glass: rgba(255, 255, 255, 0.08); }
-        body { margin: 0; font-family: 'Cairo', sans-serif; background: var(--bg); color: #fff; min-height: 100vh; overflow: hidden; position: relative; }
-        
-        /* العلامة المائية الزجاجية في الخلفية */
-        .watermark { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 70vw; height: 70vw; opacity: 0.04; z-index: -1; pointer-events: none; background: url('https://i.ibb.co/vz8S8v8/saqr-logo.png') no-repeat center; background-size: contain; }
-        
-        .glass-card { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); text-align: center; width: 100%; max-width: 400px; }
-        
-        .btn-gold { background: linear-gradient(45deg, var(--gold), #f3d08a); color: #000; border: none; padding: 14px; border-radius: 12px; width: 100%; font-weight: 900; cursor: pointer; transition: 0.3s; font-family: 'Cairo'; margin-top: 15px; }
-        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(200,155,60,0.4); }
-        
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white; font-family: 'Cairo'; text-align: center; box-sizing: border-box; }
-        
-        .container { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
-        .hidden { display: none !important; }
-        #toast { position: fixed; bottom: 20px; right: 20px; background: var(--gold); color: #000; padding: 10px 20px; border-radius: 8px; display: none; font-weight: bold; z-index: 999; }
-    </style>
+    <title>دخول - مبادرة صقر البلد الأمين</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<div id="toast"></div>
-<div class="watermark"></div>
-
-<div class="container">
-    <div class="glass-card">
-        <img src="https://i.ibb.co/vz8S8v8/saqr-logo.png" style="width:120px; margin-bottom:15px;">
-        <h2 style="margin:0 0 20px 0; font-weight: 900;">مبادرة صقر البلد الأمين</h2>
-        
-        <div id="login-section">
-            <p style="opacity: 0.8; font-size: 14px;">يرجى إدخال الرقم الوظيفي للتحقق</p>
-            <input type="text" id="empID" placeholder="الرقم الوظيفي (مثال: 1001)">
-            <button class="btn-gold" onclick="handleLogin()">دخول النظام</button>
+    <div id="toast"></div>
+    <div class="watermark"></div>
+    <div style="display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px;">
+        <div class="glass-card" style="width:100%; max-width:400px; text-align:center;">
+            <img src="logo.png" style="width:120px; margin-bottom:15px;">
+            <h2 style="margin-bottom:20px;">مبادرة صقر البلد الأمين</h2>
+            <input type="text" id="empID" placeholder="أدخل الرقم الوظيفي">
+            <button class="btn-gold" onclick="login()">دخول النظام</button>
         </div>
     </div>
-</div>
-
-<script>
-    /* ⚠️ هام جداً: استبدل الرابط أدناه برابط الـ Web App الذي حصلت عليه من Google Apps Script */
-    const SCRIPT_URL = "أدخل_رابط_تطبيق_جوجل_هنا";
-
-    function showToast(msg) {
-        const t = document.getElementById('toast');
-        t.innerText = msg;
-        t.style.display = 'block';
-        setTimeout(() => t.style.display = 'none', 3000);
-    }
-
-    async function handleLogin() {
-        const id = document.getElementById('empID').value;
-        if(!id) return showToast("⚠️ يرجى إدخال الرقم الوظيفي");
-
-        showToast("⏳ جاري التحقق من الصلاحيات...");
-
-        try {
-            // الاتصال المباشر بسيرفر جوجل (Apps Script) لمعالجة البيانات
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: JSON.stringify({
-                    action: 'verifyOTP', // هذا الأكشن موجود في Code.gs لربط المستخدمين
-                    empID: id
-                })
-            });
-
-            const res = await response.json();
-
+    <script>
+        const API = "أدخل_رابط_تطبيق_جوجل_هنا";
+        async function login() {
+            const id = document.getElementById('empID').value;
+            if(!id) return alert("يرجى إدخال الرقم الوظيفي");
+            const res = await fetch(API, {method:'POST', body:JSON.stringify({action:'verifyOTP', empID:id})}).then(r=>r.json());
             if(res.success) {
-                // حفظ الجلسة محلياً لضمان الأمان وفصل الصلاحيات في الصفحات الأخرى
-                sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('isLoggedIn','true');
                 sessionStorage.setItem('userName', res.data.name);
                 sessionStorage.setItem('userRole', res.data.role);
                 sessionStorage.setItem('empID', id);
-
-                showToast("✅ تم التحقق، جاري التحويل...");
-                setTimeout(() => {
-                    window.location.href = "home.html"; // التحويل للواجهة الرئيسية بعد الدخول
-                }, 1000);
-            } else {
-                alert("❌ خطأ: " + res.msg);
-            }
-        } catch (error) {
-            console.error(error);
-            alert("❌ حدث خطأ في الاتصال بالسيرفر. تأكد من إعدادات الـ Web App في جوجل.");
+                window.location.href = "home.html";
+            } else alert(res.msg);
         }
-    }
-</script>
-
+    </script>
 </body>
 </html>
