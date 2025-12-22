@@ -2,7 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>دخول - مبادرة صقر</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دخول - صقر البلد الأمين</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -10,24 +11,45 @@
     <div style="display:flex; justify-content:center; align-items:center; height:100vh;">
         <div class="glass-card" style="width:320px; text-align:center;">
             <img src="logo.png" style="width:100px; margin-bottom:15px;">
-            <h2 style="color:var(--gold)">مبادرة صقر</h2>
+            <h2 style="color:var(--gold)">مبادرة صقر البلد الأمين</h2>
             <input type="text" id="empID" placeholder="الرقم الوظيفي">
             <button class="btn-gold" id="loginBtn" onclick="login()">دخول</button>
         </div>
     </div>
+
     <script>
-        const API = "https://script.google.com/macros/s/AKfycbwgjGHqepXQ55fCumWhCICGGPoPCIqbPNvEDeY8aGpuR0NH7z6DsO-6zk0OJMveqOmm/exec";
+        const API = "https://script.google.com/macros/s/AKfycbz70KMwDfxhYukdwfe9bvrMCxJj7zXq0A_uLiJPoTXVU13I9zNqGvGcVk47NWQK6sBW/exec";
+
         async function login() {
             const id = document.getElementById('empID').value;
-            if(!id) return alert("أدخل الرقم");
-            const res = await fetch(API, {method:'POST', body:JSON.stringify({action:'verifyOTP', empID:id})}).then(r=>r.json());
-            if(res.success) {
-                sessionStorage.setItem('isLoggedIn', 'true');
-                sessionStorage.setItem('empID', id);
-                sessionStorage.setItem('userName', res.data.name);
-                sessionStorage.setItem('userRole', res.data.role);
-                location.href = 'home.html';
-            } else alert(res.msg);
+            const btn = document.getElementById('loginBtn');
+            if(!id) return alert("يرجى إدخال الرقم الوظيفي");
+
+            btn.disabled = true;
+            btn.innerText = "جاري التحقق...";
+
+            const url = `${API}?action=verifyOTP&empID=${id}`;
+
+            try {
+                const response = await fetch(url);
+                const res = await response.json();
+
+                if(res.success) {
+                    sessionStorage.setItem('isLoggedIn', 'true');
+                    sessionStorage.setItem('empID', id);
+                    sessionStorage.setItem('userName', res.data.name);
+                    sessionStorage.setItem('userRole', res.data.role);
+                    window.location.href = 'home.html';
+                } else {
+                    alert(res.msg);
+                    btn.disabled = false;
+                    btn.innerText = "دخول";
+                }
+            } catch (error) {
+                alert("فشل الاتصال: تأكد من إعدادات النشر (Anyone)");
+                btn.disabled = false;
+                btn.innerText = "دخول";
+            }
         }
     </script>
 </body>
