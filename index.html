@@ -3,43 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دخول - صقر البلد الأمين</title>
+    <title>دخول - مبادرة صقر البلد الأمين</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="watermark"></div>
     <div class="login-container">
         <div class="glass-card">
-            <img src="logo.png" class="main-logo">
+            <img src="logo.png" class="main-logo" alt="Logo">
             <h2>مبادرة صقر البلد الأمين</h2>
-            <input type="text" id="empID" placeholder="الرقم الوظيفي">
+            <input type="text" id="empID" placeholder="أدخل الرقم الوظيفي" inputmode="numeric">
             <button class="btn-gold" id="loginBtn" onclick="login()">دخول</button>
         </div>
     </div>
+
     <script>
-        const API = "https://script.google.com/macros/s/AKfycbw101IqJ-AS0uDHK0e4qbbhJsw2gH4MMPub-xc2EbUtYmtSpwNf722vx3HWX1eUE0MP/exec";
+        const API = "https://script.google.com/macros/s/AKfycbzUy6aZnrewD_Rw4dfywi6D_ZCkcj0Ro6gcQ5YmBN-wgMJYVREMhhOeqboO8u9lVNKQ/exec";
+
         async function login() {
-            const id = document.getElementById('empID').value;
+            const id = document.getElementById('empID').value.trim();
             const btn = document.getElementById('loginBtn');
-            if(!id) return alert("أدخل الرقم الوظيفي");
+            if(!id) return alert("يرجى إدخال الرقم الوظيفي");
+
             btn.disabled = true;
             btn.innerText = "جاري التحقق...";
+
             try {
-                const res = await fetch(`${API}?action=verifyOTP&empID=${id}`).then(r => r.json());
+                // الاتصال المباشر باستخدام GET لتجاوز مشاكل CORS
+                const response = await fetch(`${API}?action=verifyOTP&empID=${id}`);
+                const res = await response.json();
+
                 if(res.success) {
                     sessionStorage.setItem('isLoggedIn', 'true');
                     sessionStorage.setItem('empID', id);
                     sessionStorage.setItem('userName', res.data.name);
                     sessionStorage.setItem('userRole', res.data.role);
-                    location.href = 'home.html';
+                    window.location.href = 'home.html';
                 } else {
                     alert(res.msg);
                     btn.disabled = false;
                     btn.innerText = "دخول";
                 }
-            } catch (e) {
-                alert("فشل الاتصال: تأكد من إعدادات النشر على Anyone");
+            } catch (error) {
+                alert("فشل الاتصال: تأكد من إعدادات النشر على (Anyone)");
                 btn.disabled = false;
+                btn.innerText = "دخول";
             }
         }
     </script>
