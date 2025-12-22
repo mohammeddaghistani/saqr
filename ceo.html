@@ -2,50 +2,37 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>مكتب القيادة - مبادرة صقر</title>
-    <link rel="icon" type="image/png" href="logo.png">
+    <title>مكتب القيادة - صقر البلد الأمين</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="watermark"></div>
     <header>
-        <img src="logo.png" class="logo-header">
-        <button class="btn-gold" style="width:auto; padding:8px 15px;" onclick="location.href='home.html'">⬅️ عودة</button>
+        <span>📊 إحصائيات الأداء</span>
+        <button class="btn-gold" style="width:auto; padding:5px 15px;" onclick="location.href='home.html'">عودة</button>
     </header>
     <div style="padding:25px; max-width:900px; margin:auto;">
-        <div class="glass-card">
-            <h2 style="color:var(--gold); text-align:center;">📊 إحصائيات الأداء القيادي</h2>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin:20px 0; text-align:center;">
-                <div style="padding:20px; background:rgba(200,155,60,0.1); border-radius:15px; border:1px solid var(--gold)">
-                    <p>إجمالي المبالغ</p>
-                    <h1 id="total-amt" style="color:var(--gold)">0.00</h1>
-                </div>
-                <div style="padding:20px; background:rgba(255,255,255,0.05); border-radius:15px; border:1px solid rgba(255,255,255,0.1)">
-                    <p>عدد العمليات</p>
-                    <h1 id="total-count">0</h1>
-                </div>
+        <div class="glass-card" style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+            <div class="glass-card" style="background:rgba(200,155,60,0.1);">
+                <p>إجمالي المبالغ</p>
+                <h1 id="total-amt" style="color:var(--gold)">0.00</h1>
             </div>
-            <canvas id="myChart" style="max-height:300px;"></canvas>
+            <div class="glass-card" style="background:rgba(255,255,255,0.05);">
+                <p>عدد العمليات</p>
+                <h1 id="total-count">0</h1>
+            </div>
         </div>
     </div>
     <script>
-        const API = "https://script.google.com/macros/s/AKfycbzPMNYU_Q0nTlF8OI6Js4NfXbKjre4I5YspWlg8OdJMa7O1_IZiNjZsvqdfjaPsz46o/exec";
+        const API = "https://script.google.com/macros/s/AKfycbxUEtrWwX2QmEv8w0frUeGuMSOuu46US9f3IMHAez4J-cYhCy-pVFXJaByE78lODw9L/exec";
         async function load() {
-            const res = await fetch(API, {method:'POST', body:JSON.stringify({action:'getStats'})}).then(r=>r.json());
-            if(res.success) {
-                document.getElementById('total-amt').innerText = res.data.total;
-                document.getElementById('total-count').innerText = res.data.count;
-                
-                new Chart(document.getElementById('myChart'), {
-                    type: 'doughnut',
-                    data: {
-                        labels: Object.keys(res.data.categories),
-                        datasets: [{ data: Object.values(res.data.categories), backgroundColor: ['#C89B3C', '#0B5F57', '#1a3a37'] }]
-                    },
-                    options: { plugins: { legend: { labels: { color: '#fff' } } } }
-                });
-            }
+            try {
+                const res = await fetch(`${API}?action=getStats`).then(r => r.json());
+                if(res.success) {
+                    document.getElementById('total-amt').innerText = res.data.total;
+                    document.getElementById('total-count').innerText = res.data.count;
+                }
+            } catch(e) { console.log("خطأ في التحميل"); }
         }
         load();
     </script>
