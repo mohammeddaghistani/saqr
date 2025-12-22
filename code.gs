@@ -1,15 +1,18 @@
 const SS = SpreadsheetApp.getActiveSpreadsheet();
 
-// دالة GET للتحقق وجلب الإحصائيات (لتجنب مشاكل CORS)
-function doGet(e) {
-  const action = e.parameter.action;
-  
+// دالة لمعالجة جميع أنواع الطلبات (GET & POST) لضمان عبور البيانات
+function doGet(e) { return handleRequest(e); }
+function doPost(e) { return handleRequest(e); }
+
+function handleRequest(e) {
+  const action = e.parameter.action || (e.postData ? JSON.parse(e.postData.contents).action : null);
+  const empID = e.parameter.empID || (e.postData ? JSON.parse(e.postData.contents).empID : null);
+
   if (action === "verifyOTP") {
-    const empID = e.parameter.empID;
     const sheet = SS.getSheetByName("Users");
     const rows = sheet.getDataRange().getValues();
-    
     for (let i = 1; i < rows.length; i++) {
+      // التحقق من الرقم الوظيفي بدقة مع تجاهل المسافات
       if (rows[i][0].toString().trim() === empID.toString().trim()) {
         const user = { 
           name: rows[i][1], 
@@ -22,29 +25,16 @@ function doGet(e) {
     }
     return response(false, "الرقم الوظيفي غير مسجل");
   }
-
+  
+  // لجلب الإحصائيات في لوحة التحكم
   if (action === "getStats") {
     const records = SS.getSheetByName("Records").getDataRange().getValues();
-    let total = 0, list = [];
-    for (let i = 1; i < records.length; i++) {
-      total += parseFloat(records[i][5]) || 0;
-      list.push({id:records[i][0], emp:records[i][3], cat:records[i][4], amt:records[i][5], status:records[i][6]});
-    }
-    return response(true, "نجاح", { total: total.toLocaleString(), recentRecords: list.reverse() });
+    let total = 0;
+    for (let i = 1; i < records.length; i++) { total += parseFloat(records[i][5]) || 0; }
+    return response(true, "نجاح", { total: total.toLocaleString() });
   }
-}
 
-// دالة POST لإضافة البيانات
-function doPost(e) {
-  try {
-    const data = JSON.parse(e.postData.contents);
-    if (data.action === "addRecord") {
-      const sheet = SS.getSheetByName("Records");
-      const orderID = "SAQR-" + (sheet.getLastRow() + 1000);
-      sheet.appendRow([orderID, new Date(), data.empID, data.empName, data.category, parseFloat(data.amount)||0, "Pending", data.notes]);
-      return response(true, "تم الحفظ", { orderID: orderID });
-    }
-  } catch (err) { return response(false, "خطأ في السيرفر"); }
+  return response(false, "إجراء غير معروف");
 }
 
 function response(s, m, d = {}) {
