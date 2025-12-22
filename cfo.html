@@ -4,14 +4,6 @@
     <meta charset="UTF-8">
     <title>لوحة الرقابة - صقر البلد الأمين</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 13px; }
-        th { background: var(--gold); color: black; padding: 10px; }
-        td { padding: 10px; border-bottom: 1px solid rgba(200,155,60,0.2); text-align: center; }
-        .status-pending { color: #ffa500; }
-        .status-approved { color: #00ff00; }
-        .status-rejected { color: #ff4d4d; }
-    </style>
 </head>
 <body>
     <div class="watermark"></div>
@@ -22,11 +14,9 @@
 
     <div style="padding:15px;">
         <div class="glass-card" style="overflow-x:auto;">
-            <h3 style="color:var(--gold); margin-top:0;">الطلبات الأخيرة</h3>
-            <div id="loading">جاري جلب البيانات...</div>
-            <table id="recordsTable" class="hidden">
+            <table style="width:100%; text-align:center; color:white; border-collapse:collapse;">
                 <thead>
-                    <tr>
+                    <tr style="background:var(--gold); color:black;">
                         <th>الرقم</th>
                         <th>الموظف</th>
                         <th>الفئة</th>
@@ -40,34 +30,25 @@
     </div>
 
     <script>
-        const API = "https://script.google.com/macros/s/AKfycbz70KMwDfxhYukdwfe9bvrMCxJj7zXq0A_uLiJPoTXVU13I9zNqGvGcVk47NWQK6sBW/exec";
+        const API = "https://script.google.com/macros/s/AKfycbxUEtrWwX2QmEv8w0frUeGuMSOuu46US9f3IMHAez4J-cYhCy-pVFXJaByE78lODw9L/exec";
 
         async function loadData() {
             try {
-                const response = await fetch(`${API}?action=getStats`);
-                const res = await response.json();
-                
+                const res = await fetch(`${API}?action=getStats`).then(r => r.json());
                 if(res.success) {
                     const tbody = document.getElementById('tableBody');
-                    document.getElementById('loading').classList.add('hidden');
-                    document.getElementById('recordsTable').classList.remove('hidden');
-                    
-                    // ملاحظة: تأكد أن السيرفر يرسل قائمة recentRecords في getStats
                     res.data.recentRecords.forEach(rec => {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td>${rec.id}</td>
-                            <td>${rec.emp}</td>
-                            <td>${rec.cat}</td>
-                            <td>${rec.amt}</td>
-                            <td class="status-${rec.status.toLowerCase()}">${rec.status}</td>
-                        `;
-                        tbody.appendChild(tr);
+                        tbody.innerHTML += `
+                            <tr style="border-bottom:1px solid rgba(255,255,255,0.1)">
+                                <td style="padding:10px;">${rec.id}</td>
+                                <td>${rec.emp}</td>
+                                <td>${rec.cat}</td>
+                                <td>${rec.amt}</td>
+                                <td>${rec.status}</td>
+                            </tr>`;
                     });
                 }
-            } catch (e) {
-                document.getElementById('loading').innerText = "فشل تحميل البيانات";
-            }
+            } catch (e) { alert("فشل جلب البيانات"); }
         }
         loadData();
     </script>
