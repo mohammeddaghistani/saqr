@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>الدعم الفني</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="watermark"></div>
+    <header><span>🆘 مركز الدعم</span><button onclick="location.href='home.html'">عودة</button></header>
+    <div style="padding:20px; max-width:400px; margin:auto;">
+        <div class="glass-card">
+            <label>نوع المشكلة</label>
+            <select id="type"><option>تقنية</option><option>مالية</option></select>
+            <label>الوصف</label>
+            <textarea id="desc" rows="4"></textarea>
+            <button class="btn-gold" id="sendBtn" onclick="send()">إرسال البلاغ</button>
+        </div>
+    </div>
+    <script>
+        const API = "https://script.google.com/macros/s/AKfycbwgjGHqepXQ55fCumWhCICGGPoPCIqbPNvEDeY8aGpuR0NH7z6DsO-6zk0OJMveqOmm/exec";
+        async function send() {
+            const data = {
+                action: 'sendSupportTicket',
+                empID: sessionStorage.getItem('empID'),
+                empName: sessionStorage.getItem('userName'),
+                type: document.getElementById('type').value,
+                description: document.getElementById('desc').value
+            };
+            const res = await fetch(API, {method:'POST', body:JSON.stringify(data)}).then(r=>r.json());
+            if(res.success) { alert("تم الإرسال برقم: " + res.data.ticketID); location.href='home.html'; }
+        }
+    </script>
+</body>
+</html>
