@@ -7,20 +7,26 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="toast"></div>
     <div class="watermark"></div>
     <div style="display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px;">
         <div class="glass-card" style="width:100%; max-width:400px; text-align:center;">
             <img src="logo.png" style="width:120px; margin-bottom:15px;">
             <h2 style="margin-bottom:20px;">مبادرة صقر البلد الأمين</h2>
-            <input type="text" id="empID" placeholder="أدخل الرقم الوظيفي">
-            <button class="btn-gold" onclick="login()">دخول النظام</button>
+            <input type="text" id="empID" placeholder="أدخل الرقم الوظيفي (مثال: 1001)">
+            <button class="btn-gold" id="loginBtn" onclick="login()">دخول النظام</button>
         </div>
     </div>
     <script>
-        const API = "https://script.google.com/macros/s/AKfycbz1qKm_rALLDSlA1MqrFEciIJmE8VFk0AOUvnOlq3p4a-JnfAyI633-deZro_6PNnvc/exec"; 
+        const API = "https://script.google.com/macros/s/AKfycbzPMNYU_Q0nTlF8OI6Js4NfXbKjre4I5YspWlg8OdJMa7O1_IZiNjZsvqdfjaPsz46o/exec";
         async function login() {
             const id = document.getElementById('empID').value;
+            const btn = document.getElementById('loginBtn');
             if(!id) return alert("يرجى إدخال الرقم الوظيفي");
+            
+            btn.innerText = "⏳ جاري التحقق...";
+            btn.disabled = true;
+
             try {
                 const res = await fetch(API, {method:'POST', body:JSON.stringify({action:'verifyOTP', empID:id})}).then(r=>r.json());
                 if(res.success) {
@@ -29,12 +35,16 @@
                     sessionStorage.setItem('userRole', res.data.role);
                     sessionStorage.setItem('empID', id);
                     window.location.href = "home.html";
-                } else alert(res.msg);
-            } catch(e) { alert("خطأ في الاتصال بالسيرفر. تأكد من إعدادات الـ Web App."); }
+                } else {
+                    alert(res.msg);
+                    btn.innerText = "دخول النظام";
+                    btn.disabled = false;
+                }
+            } catch(e) {
+                alert("خطأ في الاتصال بالسيرفر");
+                btn.disabled = false;
+            }
         }
     </script>
 </body>
 </html>
-
-
-
