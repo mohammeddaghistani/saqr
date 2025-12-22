@@ -1,0 +1,18 @@
+// استبدل دوال الحفظ القديمة بهذه
+async function save() {
+    const data = { records: records, config: {} }; 
+    await fetch('/api/save', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    });
+}
+
+async function load() {
+    const res = await fetch('/api/load');
+    const data = await res.json();
+    if (data.length > 0) {
+        records = data[data.length - 1].content.records;
+        refreshAll();
+    }
+}
