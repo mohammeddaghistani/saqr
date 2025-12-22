@@ -1,19 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
 :root { --primary: #0B5F57; --gold: #C89B3C; --bg: #041412; --glass: rgba(255, 255, 255, 0.08); }
-
 body { margin: 0; padding: 0; font-family: 'Cairo', sans-serif; background: var(--bg); color: #fff; min-height: 100vh; direction: rtl; overflow-x: hidden; }
 
-/* العلامة المائية الفاخرة من المستودع مباشرة */
+/* العلامة المائية الفاخرة */
 .watermark { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 70vw; height: 70vw; opacity: 0.04; z-index: -1; pointer-events: none; background: url('logo.png') no-repeat center; background-size: contain; }
 
 header { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); position: sticky; top: 0; z-index: 100; }
 .logo-header { width: 45px; height: 45px; object-fit: contain; }
-
 .glass-card { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 30px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5); }
-
-.btn-gold { background: linear-gradient(45deg, var(--gold), #f3d08a); color: #000; border: none; padding: 14px; border-radius: 12px; font-weight: 900; cursor: pointer; transition: 0.3s; font-family: 'Cairo'; width: 100%; text-align: center; text-decoration: none; display: block; }
-.btn-gold:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(200, 155, 60, 0.4); }
-
-input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.05); color: white; font-family: 'Cairo'; box-sizing: border-box; outline: none; }
-#toast { position: fixed; bottom: 20px; left: 20px; background: var(--gold); color: #000; padding: 12px 25px; border-radius: 10px; font-weight: bold; display: none; z-index: 10001; }
-.hidden { display: none !important; }
+.btn-gold { background: linear-gradient(45deg, var(--gold), #f3d08a); color: #000; border: none; padding: 14px; border-radius: 12px; font-weight: 900; cursor: pointer; transition: 0.3s; font-family: 'Cairo'; width: 100%; text-align: center; }
+input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.05); color: white; font-family: 'Cairo'; }
