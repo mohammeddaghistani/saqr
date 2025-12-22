@@ -1,11 +1,11 @@
 const SS = SpreadsheetApp.getActiveSpreadsheet();
 
-// دالة GET للتحقق من الدخول وجلب البيانات (الأفضل لـ GitHub)
+// دالة GET للتحقق وجلب الإحصائيات (لتجنب مشاكل CORS)
 function doGet(e) {
   const action = e.parameter.action;
-  const empID = e.parameter.empID;
-
+  
   if (action === "verifyOTP") {
+    const empID = e.parameter.empID;
     const sheet = SS.getSheetByName("Users");
     const rows = sheet.getDataRange().getValues();
     
@@ -20,39 +20,31 @@ function doGet(e) {
         return response(true, "تم التحقق", user);
       }
     }
-    return response(false, "المستخدم غير مسجل");
+    return response(false, "الرقم الوظيفي غير مسجل");
   }
 
   if (action === "getStats") {
     const records = SS.getSheetByName("Records").getDataRange().getValues();
-    let total = 0;
+    let total = 0, list = [];
     for (let i = 1; i < records.length; i++) {
       total += parseFloat(records[i][5]) || 0;
+      list.push({id:records[i][0], emp:records[i][3], cat:records[i][4], amt:records[i][5], status:records[i][6]});
     }
-    return response(true, "نجاح", { total: total.toLocaleString() });
+    return response(true, "نجاح", { total: total.toLocaleString(), recentRecords: list.reverse() });
   }
 }
 
-// دالة POST لإضافة البيانات والبلاغات
+// دالة POST لإضافة البيانات
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
-    const action = data.action;
-
-    if (action === "addRecord") {
+    if (data.action === "addRecord") {
       const sheet = SS.getSheetByName("Records");
       const orderID = "SAQR-" + (sheet.getLastRow() + 1000);
       sheet.appendRow([orderID, new Date(), data.empID, data.empName, data.category, parseFloat(data.amount)||0, "Pending", data.notes]);
       return response(true, "تم الحفظ", { orderID: orderID });
     }
-
-    if (action === "sendSupportTicket") {
-      const sheet = SS.getSheetByName("Records");
-      const ticketID = "TICK-" + Math.floor(Math.random() * 9000 + 1000);
-      sheet.appendRow([ticketID, new Date(), data.empID, data.empName, "SUPPORT: " + data.type, 0, "Open", data.description]);
-      return response(true, "تم الإرسال", { ticketID: ticketID });
-    }
-  } catch (err) { return response(false, err.toString()); }
+  } catch (err) { return response(false, "خطأ في السيرفر"); }
 }
 
 function response(s, m, d = {}) {
