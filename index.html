@@ -18,7 +18,7 @@
     </div>
 
     <script>
-        const API = "https://script.google.com/macros/s/AKfycbzUy6aZnrewD_Rw4dfywi6D_ZCkcj0Ro6gcQ5YmBN-wgMJYVREMhhOeqboO8u9lVNKQ/exec";
+        const API = "https://script.google.com/macros/s/AKfycbxUEtrWwX2QmEv8w0frUeGuMSOuu46US9f3IMHAez4J-cYhCy-pVFXJaByE78lODw9L/exec";
 
         async function login() {
             const id = document.getElementById('empID').value.trim();
@@ -29,7 +29,6 @@
             btn.innerText = "جاري التحقق...";
 
             try {
-                // الاتصال المباشر باستخدام GET لتجاوز مشاكل CORS
                 const response = await fetch(`${API}?action=verifyOTP&empID=${id}`);
                 const res = await response.json();
 
